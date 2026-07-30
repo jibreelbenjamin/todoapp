@@ -26,9 +26,9 @@ class DatabaseSeeder extends Seeder
 
         $users = User::all();
 
-        $totalCategories = 75000;
-        $totalTasks = 100000;
-        $chunkSize = 1000;
+        $totalCategories = 2000;
+        $totalTasks = 5000;
+        $chunkSize = 100;
 
         $this->command->getOutput()->progressStart($totalCategories + $totalTasks);
 

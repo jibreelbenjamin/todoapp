@@ -10,14 +10,12 @@ use Illuminate\Support\Facades\Cache;
 class CategoryRepository implements CategoryRepositoryInterface
 {
     protected $model;
-    // protected $user;
     protected $rels = ['user'];
     protected $tag = 'categories';
     protected $ttl = 3600;
 
     public function __construct() {  
         $this->model = Category::class; 
-        // $this->user = auth()->id(); 
     }
     protected function user(){
         return auth()->id();
@@ -75,5 +73,32 @@ class CategoryRepository implements CategoryRepositoryInterface
         );
 
         return $act->delete();
+    }
+
+    public function checkOwner(array $data)
+    {
+        $act = $this->model::whereIn('id', $data)
+                    ->where('id_user', $this->user())
+                    ->pluck('id')
+                    ->toArray();
+        if (! $act) {
+            return false;
+        }
+
+        return $act;
+    }
+
+    public function bulkDelete(array $data): bool
+    {
+        $act = $this->model::whereIn('id', $data)->delete();
+        if (! $act) {
+            return false;
+        }
+
+        Cache::tags([$this->tag, "user.{$this->user()}"])->forget(
+            "{$this->tag}:user:{$this->user()}"
+        );
+
+        return true;
     }
 }

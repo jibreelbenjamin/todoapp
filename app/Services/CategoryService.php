@@ -8,48 +8,55 @@ use Illuminate\Database\Eloquent\Collection;
 class CategoryService
 {
     public function __construct(
-        private CategoryRepositoryInterface $categoryRepository
+        private CategoryRepositoryInterface $repository
     ) {}
 
-    public function getAllCategoriesUser(): Collection
+    public function getAllService(): Collection
     {
-        return $this->categoryRepository->allByUser();
+        return $this->repository->allByUser();
     }
 
-    public function getCategory(int $id): ?object
+    public function getService(int $id): ?object
     {
-        $category = $this->categoryRepository->findById($id);
-        if ($category && $category['id_user'] != auth()->id()) {
+        $collection = $this->repository->findById($id);
+        if ($collection && $collection['id_user'] != auth()->id()) {
             return null;
         }
 
-        return $category;
+        return $collection;
     }
 
-    public function createCategory(array $data): object
+    public function createService(array $data): object
     {
         $data['id_user'] = auth()->id();
 
-        return $this->categoryRepository->create($data);
+        return $this->repository->create($data);
     }
 
-    public function updateCategory(int $id, array $data): bool
+    public function updateService(int $id, array $data): bool
     {
-        $category = $this->categoryRepository->findById($id);
-        if ($category && $category['id_user'] != auth()->id()) {
+        $collection = $this->repository->findById($id);
+        if ($collection && $collection['id_user'] != auth()->id()) {
             return false;
         }
 
-        return $this->categoryRepository->update($id, $data);
+        return $this->repository->update($id, $data);
     }
 
-    public function deleteCategory(int $id): bool
+    public function deleteService(int $id): bool
     {
-        $category = $this->categoryRepository->findById($id);
-        if ($category && $category['id_user'] != auth()->id()) {
+        $collection = $this->repository->findById($id);
+        if ($collection && $collection['id_user'] != auth()->id()) {
             return false;
         }
 
-        return $this->categoryRepository->delete($id);
+        return $this->repository->delete($id);
+    }
+
+    public function bulkDeleteService(array $data)
+    {
+        $owned = $this->repository->checkOwner($data);
+
+        return $this->repository->bulkDelete($owned);
     }
 }

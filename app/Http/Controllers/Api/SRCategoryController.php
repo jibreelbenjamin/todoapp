@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class SRCategoryController
 {
+    protected $id = 'id';
+    protected $table = 'categories';
+    protected $idKeyRequest = 'id_category';
     protected $rules = [
         'title' => 'required|string',
         'color' => 'required|string',
@@ -15,16 +18,16 @@ class SRCategoryController
     protected $messages = [];
 
     public function __construct(
-        private CategoryService $categoryService
+        private CategoryService $service
     ) {}
 
     public function index()
     {
-        $categories = $this->categoryService->getAllCategoriesUser();
+        $response = $this->service->getAllService();
 
         return response()->json([
             'message' => 'OK',
-            'data' => $categories,
+            'data' => $response,
         ]);
     }
 
@@ -32,25 +35,25 @@ class SRCategoryController
     {
         $data = $request->validate($this->rules, $this->messages);
 
-        $category = $this->categoryService->createCategory($data);
+        $response = $this->service->createService($data);
 
         return response()->json([
             'message' => 'OK kebuat',
-            'data' => $category,
+            'data' => $response,
         ], 201);
     }
 
     public function show($id)
     {
-        $category = $this->categoryService->getCategory($id);
+        $response = $this->service->getService($id);
 
-        if (! $category) {
+        if (! $response) {
             return response()->json(['message' => 'GAK ADA'], 404);
         }
 
         return response()->json([
             'message' => 'OK ada',
-            'data' => $category,
+            'data' => $response,
         ]);
     }
 
@@ -58,9 +61,9 @@ class SRCategoryController
     {
         $data = $request->validate($this->rules, $this->messages);
 
-        $updated = $this->categoryService->updateCategory($id, $data);
+        $response = $this->service->updateService($id, $data);
 
-        if (! $updated) {
+        if (! $response) {
             return response()->json(['message' => 'GAK ADA'], 404);
         }
 
@@ -69,12 +72,27 @@ class SRCategoryController
 
     public function destroy($id)
     {
-        $deleted = $this->categoryService->deleteCategory($id);
+        $response = $this->service->deleteService($id);
 
-        if (! $deleted) {
+        if (! $response) {
             return response()->json(['message' => 'GAK ADA'], 404);
         }
 
         return response()->json(['message' => 'OK kehapus']);
+    }
+
+    public function bulkDestroy(Request $request){
+        $data = $request->validate([
+            "{$this->idKeyRequest}" => "required|array|min:1",
+            "{$this->idKeyRequest}.*" => "integer|exists:{$this->table},{$this->id}",
+        ]);
+
+        $response = $this->service->bulkDeleteService($data[$this->idKeyRequest]);
+
+        if (! $response) {
+            return response()->json(['message' => 'gabisa'], 404);
+        }
+
+        return response()->json(['message' => 'OK kehapus semua']);
     }
 }

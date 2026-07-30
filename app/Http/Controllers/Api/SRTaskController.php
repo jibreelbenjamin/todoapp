@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class SRTaskController
 {
+    protected $id = 'id';
+    protected $table = 'tasks';
+    protected $idKeyRequest = 'id_task';
     protected $rules = [
         'id_category' => 'required|exists:categories,id',
         'title' => 'required|string',
@@ -15,9 +18,7 @@ class SRTaskController
         'priority' => 'enum:none,low,medium,high',
         'due_date' => 'date',
     ];
-    protected $messages = [
-
-    ];
+    protected $messages = [];
 
     public function __construct(
         private TaskService $service
@@ -81,5 +82,37 @@ class SRTaskController
         }
 
         return response()->json(['message' => 'OK kehapus']);
+    }
+
+    public function bulkDestroy(Request $request){
+        $data = $request->validate([
+            "{$this->idKeyRequest}" => "required|array|min:1",
+            "{$this->idKeyRequest}.*" => "integer|exists:{$this->table},{$this->id}",
+        ]);
+
+        $response = $this->service->bulkDeleteService($data[$this->idKeyRequest]);
+
+        if (! $response) {
+            return response()->json(['message' => 'gabisa'], 404);
+        }
+
+        return response()->json(['message' => 'OK kehapus semua']);
+    }
+
+    public function bulkStatus(Request $request)
+    {
+        $data = $request->validate([
+            "{$this->idKeyRequest}" => "required|array|min:1",
+            "{$this->idKeyRequest}.*" => "integer|exists:{$this->table},{$this->id}",
+            'status' => 'required|in:drop,pending,progress,done'
+        ]);
+
+        $response = $this->service->bulkStatusService($data);
+
+        if (! $response) {
+            return response()->json(['message' => 'gbisa'], 404);
+        }
+
+        return response()->json(['message' => 'OK keupdate semua']);
     }
 }

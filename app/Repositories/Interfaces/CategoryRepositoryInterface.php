@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface CategoryRepositoryInterface
 {
-    // public function all(): Collection;
-
     public function allByUser(): Collection;
 
     public function findById(int $id): ?Category;
@@ -18,4 +16,8 @@ interface CategoryRepositoryInterface
     public function update(int $id, array $data): bool;
 
     public function delete(int $id): bool;
+
+    public function checkOwner(array $data);
+
+    public function bulkDelete(array $data): bool;
 }

@@ -52,4 +52,20 @@ class TaskService
 
         return $this->repository->delete($id);
     }
+
+    public function bulkDeleteService(array $data)
+    {
+        // return dd($data);
+        $owned = $this->repository->checkOwner($data);
+        // dd($owned);
+
+        return $this->repository->bulkDelete($owned);
+    }
+
+    public function bulkStatusService(array $data)
+    {
+        $owned = $this->repository->checkOwner($data['id_task']);
+
+        return $this->repository->bulkStatus($owned, $data['status']);
+    }
 }

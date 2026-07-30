@@ -25,7 +25,6 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
-
     Route::get('me', [AuthController::class, 'profile']);
     Route::post('logout', [AuthController::class, 'logout']);
 
@@ -42,12 +41,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('category/{id}', [CategoryController::class, 'destroy']);
 
     // implementasi sevice dan repo
+    Route::post('sr/task/bulk/delete', [SRTaskController::class, 'bulkDestroy']);
+    Route::post('sr/task/bulk/status', [SRTaskController::class, 'bulkStatus']);
     Route::get('sr/task', [SRTaskController::class, 'index']);
     Route::post('sr/task', [SRTaskController::class, 'store']);
     Route::get('sr/task/{id}', [SRTaskController::class, 'show']);
     Route::put('sr/task/{id}', [SRTaskController::class, 'update']);
     Route::delete('sr/task/{id}', [SRTaskController::class, 'destroy']);
-
+    
+    Route::post('sr/category/bulk/delete', [SRCategoryController::class, 'bulkDestroy']);
     Route::get('sr/category', [SRCategoryController::class, 'index']);
     Route::post('sr/category', [SRCategoryController::class, 'store']);
     Route::get('sr/category/{id}', [SRCategoryController::class, 'show']);
