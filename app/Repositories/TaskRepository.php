@@ -14,10 +14,13 @@ class TaskRepository implements TaskRepositoryInterface
     protected $tag = 'tasks';
     protected $ttl = 3600;
 
-    public function __construct() {  
-        $this->model = Task::class; 
+    public function __construct()
+    {
+        $this->model = Task::class;
     }
-    protected function user(){
+
+    protected function user()
+    {
         return auth()->id();
     }
 
@@ -78,9 +81,9 @@ class TaskRepository implements TaskRepositoryInterface
     public function checkOwner(array $data)
     {
         $act = $this->model::whereIn('id', $data)
-                    ->where('id_user', $this->user())
-                    ->pluck('id')
-                    ->toArray();
+            ->where('id_user', $this->user())
+            ->pluck('id')
+            ->toArray();
         if (! $act) {
             return false;
         }
@@ -102,9 +105,9 @@ class TaskRepository implements TaskRepositoryInterface
         return true;
     }
 
-    public function bulkStatus(array $tasks, string $status): bool
+    public function bulkStatus(array $data, string $status): bool
     {
-        $act = $this->model::whereIn('id', $tasks)->update(['status' => $status]);
+        $act = $this->model::whereIn('id', $data)->update(['status' => $status]);
         if (! $act) {
             return false;
         }
@@ -114,5 +117,12 @@ class TaskRepository implements TaskRepositoryInterface
         );
 
         return true;
+    }
+
+    public function bulkStatusByCondition(array $statusIn, $date, string $newStatus): int
+    {
+        return $this->model::whereIn('status', $statusIn)
+            ->where('due_date', '<', $date)
+            ->update(['status' => $newStatus]);
     }
 }

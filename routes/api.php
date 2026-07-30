@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('sr/task/{id}', [SRTaskController::class, 'show']);
     Route::put('sr/task/{id}', [SRTaskController::class, 'update']);
     Route::delete('sr/task/{id}', [SRTaskController::class, 'destroy']);
-    
+
     Route::post('sr/category/bulk/delete', [SRCategoryController::class, 'bulkDestroy']);
     Route::get('sr/category', [SRCategoryController::class, 'index']);
     Route::post('sr/category', [SRCategoryController::class, 'store']);

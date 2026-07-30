@@ -81,9 +81,10 @@ class SRCategoryController
         return response()->json(['message' => 'OK kehapus']);
     }
 
-    public function bulkDestroy(Request $request){
+    public function bulkDestroy(Request $request)
+    {
         $data = $request->validate([
-            "{$this->idKeyRequest}" => "required|array|min:1",
+            "{$this->idKeyRequest}" => 'required|array|min:1',
             "{$this->idKeyRequest}.*" => "integer|exists:{$this->table},{$this->id}",
         ]);
 

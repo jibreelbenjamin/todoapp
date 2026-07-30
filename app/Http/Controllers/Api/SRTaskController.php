@@ -18,6 +18,7 @@ class SRTaskController
         'priority' => 'enum:none,low,medium,high',
         'due_date' => 'date',
     ];
+
     protected $messages = [];
 
     public function __construct(
@@ -84,9 +85,10 @@ class SRTaskController
         return response()->json(['message' => 'OK kehapus']);
     }
 
-    public function bulkDestroy(Request $request){
+    public function bulkDestroy(Request $request)
+    {
         $data = $request->validate([
-            "{$this->idKeyRequest}" => "required|array|min:1",
+            "{$this->idKeyRequest}" => 'required|array|min:1',
             "{$this->idKeyRequest}.*" => "integer|exists:{$this->table},{$this->id}",
         ]);
 
@@ -102,9 +104,9 @@ class SRTaskController
     public function bulkStatus(Request $request)
     {
         $data = $request->validate([
-            "{$this->idKeyRequest}" => "required|array|min:1",
+            "{$this->idKeyRequest}" => 'required|array|min:1',
             "{$this->idKeyRequest}.*" => "integer|exists:{$this->table},{$this->id}",
-            'status' => 'required|in:drop,pending,progress,done'
+            'status' => 'required|in:drop,pending,progress,done',
         ]);
 
         $response = $this->service->bulkStatusService($data);

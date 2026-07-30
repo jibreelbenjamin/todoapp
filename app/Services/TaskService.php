@@ -68,4 +68,9 @@ class TaskService
 
         return $this->repository->bulkStatus($owned, $data['status']);
     }
+
+    public function bulkStatusByCondition(array $statusIn, $date, string $newStatus)
+    {
+        return $this->repository->bulkStatusByCondition($statusIn, $date, $newStatus);
+    }
 }

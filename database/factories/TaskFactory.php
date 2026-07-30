@@ -26,7 +26,7 @@ class TaskFactory extends Factory
             'description' => fake()->paragraph(),
             'status' => fake()->randomElement(['drop', 'pending', 'progress', 'done']),
             'priority' => fake()->randomElement(['none', 'low', 'medium', 'high']),
-            'due_date' => fake()->optional()->dateTimeBetween('now', '+30 days')?->format('Y-m-d'),
+            'due_date' => fake()->optional(0.7)->dateTimeBetween('-10 days', '+30 days')?->format('Y-m-d'),
         ];
     }
 
@@ -77,6 +77,17 @@ class TaskFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'priority' => 'high',
+        ]);
+    }
+
+    /**
+     * Indicate that the task is overdue (pending/progress with past due_date).
+     */
+    public function overdue(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => fake()->randomElement(['pending', 'progress']),
+            'due_date' => fake()->dateTimeBetween('-14 days', '-1 day')->format('Y-m-d'),
         ]);
     }
 }

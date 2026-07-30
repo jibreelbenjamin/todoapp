@@ -14,10 +14,13 @@ class CategoryRepository implements CategoryRepositoryInterface
     protected $tag = 'categories';
     protected $ttl = 3600;
 
-    public function __construct() {  
-        $this->model = Category::class; 
+    public function __construct()
+    {
+        $this->model = Category::class;
     }
-    protected function user(){
+
+    protected function user()
+    {
         return auth()->id();
     }
 
@@ -78,9 +81,9 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function checkOwner(array $data)
     {
         $act = $this->model::whereIn('id', $data)
-                    ->where('id_user', $this->user())
-                    ->pluck('id')
-                    ->toArray();
+            ->where('id_user', $this->user())
+            ->pluck('id')
+            ->toArray();
         if (! $act) {
             return false;
         }
