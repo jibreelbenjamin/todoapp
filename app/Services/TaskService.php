@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\SyncAllTasksToGoogleCalendar;
 use App\Repositories\Interfaces\TaskRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -29,8 +30,11 @@ class TaskService
     public function createService(array $data): object
     {
         $data['id_user'] = auth()->id();
+        $act = $this->repository->create($data);
 
-        return $this->repository->create($data);
+        SyncAllTasksToGoogleCalendar::dispatch(auth()->id());
+
+        return $act;
     }
 
     public function updateService(int $id, array $data): bool
@@ -72,5 +76,12 @@ class TaskService
     public function bulkStatusByCondition(array $statusIn, $date, string $newStatus)
     {
         return $this->repository->bulkStatusByCondition($statusIn, $date, $newStatus);
+    }
+
+    public function syncAllGCalendar()
+    {
+        // dd(auth()->id());
+        // return auth()->id();
+        SyncAllTasksToGoogleCalendar::dispatch(auth()->id());
     }
 }

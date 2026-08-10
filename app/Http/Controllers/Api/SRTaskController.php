@@ -8,8 +8,11 @@ use Illuminate\Http\Request;
 class SRTaskController
 {
     protected $id = 'id';
+
     protected $table = 'tasks';
+
     protected $idKeyRequest = 'id_task';
+
     protected $rules = [
         'id_category' => 'required|exists:categories,id',
         'title' => 'required|string',
@@ -116,5 +119,15 @@ class SRTaskController
         }
 
         return response()->json(['message' => 'OK keupdate semua']);
+    }
+
+    public function syncTaskGCalendar()
+    {
+        $response = $this->service->syncAllGCalendar();
+
+        return response()->json([
+            'message' => 'OK',
+            'data' => $response,
+        ]);
     }
 }
