@@ -1,5 +1,6 @@
 <?php
 // php artisan queue:work
+// php artisan horizon
 // php artisan schedule:list
 use Illuminate\Support\Facades\Schedule;
 
