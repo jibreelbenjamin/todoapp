@@ -109,5 +109,9 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->command->getOutput()->progressFinish();
+
+        // Opsional: seed job-job yang sengaja dibuat gagal (untuk uji failed jobs).
+        // Bisa di-disable dengan memberi komentar baris di bawah.
+        $this->call(JobFailureSeeder::class);
     }
 }
